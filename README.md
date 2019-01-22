@@ -1,111 +1,104 @@
-## Fast Style Transfer in [TensorFlow](https://github.com/tensorflow/tensorflow)
 
-Add styles from famous paintings to any photo in a fraction of a second! [You can even style videos!](#video-stylization)
+# Style Transfer
 
-<p align = 'center'>
-<img src = 'examples/style/udnie.jpg' height = '246px'>
-<img src = 'examples/content/stata.jpg' height = '246px'>
-<a href = 'examples/results/stata_udnie.jpg'><img src = 'examples/results/stata_udnie_header.jpg' width = '627px'></a>
-</p>
-<p align = 'center'>
-It takes 100ms on a 2015 Titan X to style the MIT Stata Center (1024×680) like Udnie, by Francis Picabia.
-</p>
+As an example of the kind of things you'll be building with deep learning models, here is a really fun project,  [fast style transfer](https://github.com/lengstrom/fast-style-transfer). Style transfer allows you to take famous paintings, and recreate your own images in their styles! The network learns the underlying techniques of those paintings and figures out how to apply them on its own. This model was trained on the styles of famous paintings and is able to transfer those styles to other images and  [even videos](https://www.youtube.com/watch?v=xVJwwWQlQ1o)!
 
-Our implementation is based off of a combination of Gatys' [A Neural Algorithm of Artistic Style](https://arxiv.org/abs/1508.06576), Johnson's [Perceptual Losses for Real-Time Style Transfer and Super-Resolution](http://cs.stanford.edu/people/jcjohns/eccv16/), and Ulyanov's [Instance Normalization](https://arxiv.org/abs/1607.08022). 
+I used it to style my cat Chihiro in the style of  [Hokusai](https://en.wikipedia.org/wiki/Hokusai)'s  [_The Great Wave Off Kanagawa_](https://en.wikipedia.org/wiki/The_Great_Wave_off_Kanagawa).
 
-### License
-Copyright (c) 2016 Logan Engstrom. Contact me for commercial use (or rather any use that is not academic research) (email: engstrom at my university's domain dot edu). Free for research use, as long as proper attribution is given and this copyright notice is retained.
+[](https://classroom.udacity.com/nanodegrees/nd101/parts/09023a41-74e1-4df6-8404-5020a0c94369/modules/42cdd3bf-267c-4ad1-8c0c-0c3357569e8a/lessons/27585811-c026-40a0-afb4-b1b9ef03d97f/concepts/7991da18-bbd0-4606-83e5-3bc5ce558e70#)
 
-## Video Stylization 
-Here we transformed every frame in a video, then combined the results. [Click to go to the full demo on YouTube!](https://www.youtube.com/watch?v=xVJwwWQlQ1o) The style here is Udnie, as above.
-<div align = 'center'>
-     <a href = 'https://www.youtube.com/watch?v=xVJwwWQlQ1o'>
-        <img src = 'examples/results/fox_udnie.gif' alt = 'Stylized fox video. Click to go to YouTube!' width = '800px' height = '400px'>
-     </a>
-</div>
+![](https://d17h27t6h515a5.cloudfront.net/topher/2017/January/587d0443_chi-waves/chi-waves.png)
 
-See how to generate these videos [here](#stylizing-video)!
+To try it out yourself, you can find the code in the  [fast-style-transfer GitHub repo](https://github.com/lengstrom/fast-style-transfer). Either use  `git`  to clone the repository, or you can download the whole thing as a Zip archive and extract it.
 
-## Image Stylization
-We added styles from various paintings to a photo of Chicago. Click on thumbnails to see full applied style images.
-<div align='center'>
-<img src = 'examples/content/chicago.jpg' height="200px">
-</div>
-     
-<div align = 'center'>
-<a href = 'examples/style/wave.jpg'><img src = 'examples/thumbs/wave.jpg' height = '200px'></a>
-<img src = 'examples/results/chicago_wave.jpg' height = '200px'>
-<img src = 'examples/results/chicago_udnie.jpg' height = '200px'>
-<a href = 'examples/style/udnie.jpg'><img src = 'examples/thumbs/udnie.jpg' height = '200px'></a>
-<br>
-<a href = 'examples/style/rain_princess.jpg'><img src = 'examples/thumbs/rain_princess.jpg' height = '200px'></a>
-<img src = 'examples/results/chicago_rain_princess.jpg' height = '200px'>
-<img src = 'examples/results/chicago_la_muse.jpg' height = '200px'>
-<a href = 'examples/style/la_muse.jpg'><img src = 'examples/thumbs/la_muse.jpg' height = '200px'></a>
+The network has been trained on a few different styles ([here](https://github.com/lengstrom/fast-style-transfer/tree/master/examples/style)) and saved into  [checkpoint files](https://drive.google.com/drive/folders/0B9jhaT37ydSyRk9UX0wwX3BpMzQ). Checkpoint files contain all the information about the trained network to apply styles to new images.
 
-<br>
-<a href = 'examples/style/the_shipwreck_of_the_minotaur.jpg'><img src = 'examples/thumbs/the_shipwreck_of_the_minotaur.jpg' height = '200px'></a>
-<img src = 'examples/results/chicago_wreck.jpg' height = '200px'>
-<img src = 'examples/results/chicago_the_scream.jpg' height = '200px'>
-<a href = 'examples/style/the_scream.jpg'><img src = 'examples/thumbs/the_scream.jpg' height = '200px'></a>
-</div>
+## Dependencies
 
-## Implementation Details
-Our implementation uses TensorFlow to train a fast style transfer network. We use roughly the same transformation network as described in Johnson, except that batch normalization is replaced with Ulyanov's instance normalization, and the scaling/offset of the output `tanh` layer is slightly different. We use a loss function close to the one described in Gatys, using VGG19 instead of VGG16 and typically using "shallower" layers than in Johnson's implementation (e.g. we use `relu1_1` rather than `relu1_2`). Empirically, this results in larger scale style features in transformations.
+The easiest way to install all the packages needed to run this code is with  [Miniconda](http://conda.pydata.org/miniconda.html), a smaller version of  [Anaconda](https://www.continuum.io/downloads). Miniconda comes with Conda, a package and environment manager built specifically for data science. Install the Python 3 version of Miniconda appropriate for your operating system.
 
-## Documentation
-### Training Style Transfer Networks
-Use `style.py` to train a new style transfer network. Run `python style.py` to view all the possible parameters. Training takes 4-6 hours on a Maxwell Titan X. [More detailed documentation here](docs.md#stylepy). **Before you run this, you should run `setup.sh`**. Example usage:
+If you haven't used Conda before, please quickly run through the Anaconda lesson (Lesson 3 on this part).
 
-    python style.py --style path/to/style/img.jpg \
-      --checkpoint-dir checkpoint/path \
-      --test path/to/test/img.jpg \
-      --test-dir path/to/test/dir \
-      --content-weight 1.5e1 \
-      --checkpoint-iterations 1000 \
-      --batch-size 20
+### Windows
 
-### Evaluating Style Transfer Networks
-Use `evaluate.py` to evaluate a style transfer network. Run `python evaluate.py` to view all the possible parameters. Evaluation takes 100 ms per frame (when batch size is 1) on a Maxwell Titan X. [More detailed documentation here](docs.md#evaluatepy). Takes several seconds per frame on a CPU. **Models for evaluation are [located here](https://drive.google.com/drive/folders/0B9jhaT37ydSyRk9UX0wwX3BpMzQ?usp=sharing)**. Example usage:
+For Windows, you'll need to install TensorFlow 0.12.1, Python 3.5, Pillow 3.4.2, scipy 0.18.1, and numpy 1.11.2. After installing Miniconda, open your command prompt. In there, enter these commands line by line:
 
-    python evaluate.py --checkpoint path/to/style/model.ckpt \
-      --in-path dir/of/test/imgs/ \
-      --out-path dir/for/results/
-
-### Stylizing Video
-Use `transform_video.py` to transfer style into a video. Run `python transform_video.py` to view all the possible parameters. Requires `ffmpeg`. [More detailed documentation here](docs.md#transform_videopy). Example usage:
-
-    python transform_video.py --in-path path/to/input/vid.mp4 \
-      --checkpoint path/to/style/model.ckpt \
-      --out-path out/video.mp4 \
-      --device /gpu:0 \
-      --batch-size 4
-
-### Requirements
-You will need the following to run the above:
-- TensorFlow 0.11.0
-- Python 2.7.9, Pillow 3.4.2, scipy 0.18.1, numpy 1.11.2
-- If you want to train (and don't want to wait for 4 months):
-  - A decent GPU
-  - All the required NVIDIA software to run TF on a GPU (cuda, etc)
-- ffmpeg 3.1.3 if you want to stylize video
-
-### Citation
 ```
-  @misc{engstrom2016faststyletransfer,
-    author = {Logan Engstrom},
-    title = {Fast Style Transfer},
-    year = {2016},
-    howpublished = {\url{https://github.com/lengstrom/fast-style-transfer/}},
-    note = {commit xxxxxxx}
-  }
+conda create -n style-transfer python=3
+activate style-transfer
+conda install tensorflow scipy pillow
+pip install moviepy
+python -c "import imageio; imageio.plugins.ffmpeg.download()"
+
 ```
 
-### Attributions/Thanks
-- This project could not have happened without the advice (and GPU access) given by [Anish Athalye](http://www.anishathalye.com/). 
-  - The project also borrowed some code from Anish's [Neural Style](https://github.com/anishathalye/neural-style/)
-- Some readme/docs formatting was borrowed from Justin Johnson's [Fast Neural Style](https://github.com/jcjohnson/fast-neural-style)
-- The image of the Stata Center at the very beginning of the README was taken by [Juan Paulo](https://juanpaulo.me/)
+### OS X and Linux
 
-### Related Work
-- Michael Ramos ported this network [to use CoreML on iOS](https://medium.com/@rambossa/diy-prisma-fast-style-transfer-app-with-coreml-and-tensorflow-817c3b90dacd)
+For OS X and Linux, you'll need to install TensorFlow 0.11.0, Python 2.7.9, Pillow 3.4.2, scipy 0.18.1, and numpy 1.11.2.
+
+In your terminal, enter this commands line by line:
+
+```
+conda create -n style-transfer python=3
+activate style-transfer
+conda install tensorflow scipy pillow
+pip install moviepy
+python -c "import imageio; imageio.plugins.ffmpeg.download()"
+
+```
+
+Let’s take a quick look at what these commands do. The first line in both sets of instructions, creates a new environment with Python 3. This environment will hold all the packages you need for the style transfer code. The next line enters the environment. Next, we install TensorFlow, SciPy, Pillow (which is an image processing library), and moviepy. The last line here installs ffmpeg, an application for converting images and videos.
+
+## Transferring styles
+
+1.  Download the Zip archive from the  [fast-style-transfer](https://github.com/lengstrom/fast-style-transfer)  repository and extract it. You can download it by clicking on the bright green button on the right.
+2.  Download the Rain Princess checkpoint from  [here](https://d17h27t6h515a5.cloudfront.net/topher/2017/January/587d1865_rain-princess/rain-princess.ckpt). Put it in the fast-style-transfer folder. A checkpoint file is a model that already has tuned parameters. By using this checkpoint file, we won't need to train the model and can get straight to applying it.
+3.  Copy the image you want to style into the fast-style-transfer folder.
+4.  Enter the Conda environment you created above, if you aren't still in it.
+
+Finally, in your terminal, navigate to the fast-style-transfer folder and enter
+
+```
+python evaluate.py --checkpoint ./rain-princess.ckpt --in-path <path_to_input_file> --out-path ./output_image.jpg
+
+```
+
+> **Note:**  Your checkpoint file might be named  `rain_princess.ckpt`, notice the underscore, it's not the dash from above.
+
+You can get more checkpoint files at the bottom of this page. Try them all!
+
+Share what you create in the  [forums](https://discussions.udacity.com/)  or on the  [Slack](https://nd101.slack.com/)  channel #neural-networks. We'd love to see what you come up with. Also, feel free to train the network on your own images, you can find instructions in the repository (although it does take some powerful hardware).
+
+> **Note:**  Be careful with the size of the input image. The style transfer can take quite a while to run on larger images.
+
+### Style Transfer Checklist
+
+Task List
+
+-   Apply style transfer to an image of yourself or something personal to you.
+    
+-   Share your image on Twitter using the hashtag #MadeWithUdacity
+    
+
+The checkpoints were trained on the following paintings:
+
+-   Rain Princesss, by  [Leonid Afremov](https://afremov.com/Leonid-Afremov-bio.html)
+-   La Muse, by  [Pablo Picasso](https://en.wikipedia.org/wiki/Pablo_Picasso)
+-   Udnie by  [Francis Picabia](https://en.wikipedia.org/wiki/Francis_Picabia)
+-   Scream, by  [Edvard Munch](https://en.wikipedia.org/wiki/Edvard_Munch)
+-   The Great Wave off Kanagawa, by  [Hokusai](https://en.wikipedia.org/wiki/Hokusai)
+-   The Shipwreck of the Minotaur, by  [J.M.W. Turner](https://en.wikipedia.org/wiki/J._M._W._Turner)
+
+#### Material de apoyo
+
+[Rain Princess checkpoint](http://video.udacity-data.com.s3.amazonaws.com/topher/2017/January/587d1865_rain-princess/rain-princess.ckpt)
+
+[La Muse checkpoint](http://video.udacity-data.com.s3.amazonaws.com/topher/2017/January/588aa800_la-muse/la-muse.ckpt)
+
+[Udnie checkpoint](http://video.udacity-data.com.s3.amazonaws.com/topher/2017/January/588aa846_udnie/udnie.ckpt)
+
+[Scream checkpoint](http://video.udacity-data.com.s3.amazonaws.com/topher/2017/January/588aa883_scream/scream.ckpt)
+
+[Wave checkpoint](http://video.udacity-data.com.s3.amazonaws.com/topher/2017/January/588aa89d_wave/wave.ckpt)
+
+[Wreck checkpoint](http://video.udacity-data.com.s3.amazonaws.com/topher/2017/January/588aa8b6_wreck/wreck.ckpt)
